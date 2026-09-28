@@ -1,32 +1,32 @@
-# 📬 Notification Service Backend
+# Notification Service Backend
 
-A clean, lightweight, and robust Notification Service REST API built with **Node.js**, **Express**, **TypeScript**, and **MongoDB**.
-
----
-
-## ✨ Features
-
-- **🔐 Secure Authentication**: Register, login, and fetch user profile with bcrypt password hashing and JWT.
-- **📩 Notifications CRUD**: Create, read, mark as read, and delete notifications.
-- **🛡️ Strict Authorization**: Users can only create, view, update, and delete their own notifications.
-- **✔️ Input Validation**: Simple and effective request validation with descriptive `400 Bad Request` messages.
-- **⚠️ Centralized Error Handling**: Unified and consistent JSON response structure across the application.
-- **📦 Clean TypeScript Architecture**: Strongly-typed code without over-engineering or unnecessary abstractions.
+A simple, lightweight, and robust Notification Service REST API built with Node.js, Express, TypeScript, and MongoDB.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-- **Runtime**: [Node.js](https://nodejs.org/)
-- **Framework**: [Express.js](https://expressjs.com/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Database**: [MongoDB](https://www.mongodb.com/) via [Mongoose](https://mongoosejs.com/)
-- **Security & Auth**: [JWT (jsonwebtoken)](https://jwt.io/), [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
-- **Environment**: [dotenv](https://github.com/motdotla/dotenv)
+- **Authentication**: Register, login, and fetch user profile with bcrypt password hashing and JWT.
+- **Notifications CRUD**: Create, read, mark as read, and delete notifications.
+- **Strict Authorization**: Users can only create, view, update, and delete their own notifications.
+- **Input Validation**: Request validation for all inputs with descriptive 400 Bad Request messages.
+- **Centralized Error Handling**: Unified and consistent JSON response structure across the application.
+- **Clean TypeScript Architecture**: Strongly-typed code without over-engineering or unnecessary abstractions.
 
 ---
 
-## 📁 Folder Structure
+## Tech Stack
+
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Language**: TypeScript
+- **Database**: MongoDB via Mongoose
+- **Security and Auth**: JWT (jsonwebtoken), bcrypt
+- **Configuration**: dotenv
+
+---
+
+## Folder Structure
 
 ```text
 notification-service/
@@ -46,7 +46,7 @@ notification-service/
 │   │   ├── auth.routes.ts          # Auth route endpoints
 │   │   └── notification.routes.ts  # Notification route endpoints
 │   ├── utils/
-│   │   └── jwt.ts                  # JWT sign & verify utilities
+│   │   └── jwt.ts                  # JWT sign and verify utilities
 │   ├── app.ts                      # Express app configuration
 │   └── server.ts                   # Application entry point
 ├── .env.example                    # Sample environment variables
@@ -58,14 +58,14 @@ notification-service/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or higher recommended)
-- [MongoDB](https://www.mongodb.com/try/download/community) installed and running locally on default port `27017`
+- Node.js (v18 or higher recommended)
+- MongoDB installed and running locally on port 27017
 
 ### 2. Installation
-Clone the repository and install dependencies:
+Clone or open the repository, then install dependencies:
 ```bash
 npm install
 ```
@@ -80,12 +80,12 @@ Ensure your `.env` contains:
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/notification_service
-JWT_SECRET=your_super_secret_jwt_key
+JWT_SECRET=your_secret_here
 ```
 
 ---
 
-## 📜 Available Scripts
+## Available Scripts
 
 | Command | Description |
 | --- | --- |
@@ -95,35 +95,36 @@ JWT_SECRET=your_super_secret_jwt_key
 
 ---
 
-## 📡 API Reference
+## API Reference
 
 Base URL: `http://localhost:5000/api`
 
-### 🔑 Authentication
+### Authentication Endpoints
 
-| Method | Endpoint | Description | Auth |
-| :--- | :--- | :--- | :---: |
-| `POST` | `/auth/register` | Register a new user | ❌ |
-| `POST` | `/auth/login` | Login user & obtain JWT | ❌ |
-| `GET` | `/auth/me` | Fetch logged-in user profile | 🔒 Bearer |
+| Method | Endpoint | Description | Auth Required |
+| --- | --- | --- | --- |
+| POST | `/api/auth/register` | Register a new user | No |
+| POST | `/api/auth/login` | Login user and receive JWT | No |
+| GET | `/api/auth/me` | Fetch logged-in user profile | Yes (Bearer Token) |
 
-### 🔔 Notifications
+### Notification Endpoints
 
-| Method | Endpoint | Description | Auth |
-| :--- | :--- | :--- | :---: |
-| `POST` | `/notifications` | Create a new notification (`EMAIL` \| `IN_APP`) | 🔒 Bearer |
-| `GET` | `/notifications` | Get all notifications for current user | 🔒 Bearer |
-| `GET` | `/notifications/:id` | Get single notification by ID | 🔒 Bearer |
-| `PATCH` | `/notifications/:id/read` | Mark a notification as read | 🔒 Bearer |
-| `DELETE` | `/notifications/:id` | Delete a notification | 🔒 Bearer |
+| Method | Endpoint | Description | Auth Required |
+| --- | --- | --- | --- |
+| POST | `/api/notifications` | Create a notification (EMAIL or IN_APP) | Yes (Bearer Token) |
+| GET | `/api/notifications` | Get all notifications for current user | Yes (Bearer Token) |
+| GET | `/api/notifications/:id` | Get single notification by ID | Yes (Bearer Token) |
+| PATCH | `/api/notifications/:id/read` | Mark a notification as read | Yes (Bearer Token) |
+| DELETE | `/api/notifications/:id` | Delete a notification | Yes (Bearer Token) |
 
 ---
 
-## 🧪 Request & Response Examples
+## Request and Response Examples
 
 ### Register User
-**Request:**
-`POST /api/auth/register`
+Endpoint: `POST /api/auth/register`
+
+Request Body:
 ```json
 {
   "name": "Jane Doe",
@@ -132,7 +133,7 @@ Base URL: `http://localhost:5000/api`
 }
 ```
 
-**Success Response (`201 Created`):**
+Response (`201 Created`):
 ```json
 {
   "success": true,
@@ -152,19 +153,51 @@ Base URL: `http://localhost:5000/api`
 
 ---
 
+### Login User
+Endpoint: `POST /api/auth/login`
+
+Request Body:
+```json
+{
+  "email": "jane@example.com",
+  "password": "mypassword123"
+}
+```
+
+Response (`200 OK`):
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "user": {
+      "_id": "670f5e1f0e21a8a9c3d4e5f6",
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "createdAt": "2026-09-28T14:20:00.000Z",
+      "updatedAt": "2026-09-28T14:20:00.000Z"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+---
+
 ### Create Notification
-**Header:** `Authorization: Bearer <token>`  
-**Request:**
-`POST /api/notifications`
+Endpoint: `POST /api/notifications`  
+Header: `Authorization: Bearer <token>`
+
+Request Body:
 ```json
 {
   "title": "Order Shipped",
-  "message": "Your package is on its way!",
+  "message": "Your package is on its way",
   "type": "IN_APP"
 }
 ```
 
-**Success Response (`201 Created`):**
+Response (`201 Created`):
 ```json
 {
   "success": true,
@@ -174,7 +207,7 @@ Base URL: `http://localhost:5000/api`
       "_id": "670f5e420e21a8a9c3d4e5f8",
       "user": "670f5e1f0e21a8a9c3d4e5f6",
       "title": "Order Shipped",
-      "message": "Your package is on its way!",
+      "message": "Your package is on its way",
       "type": "IN_APP",
       "isRead": false,
       "createdAt": "2026-09-28T14:22:00.000Z",
@@ -186,8 +219,8 @@ Base URL: `http://localhost:5000/api`
 
 ---
 
-### Standard Error Response Example
-If input is invalid or a notification is not found:
+### Standard Error Response
+When input validation fails or a resource is not found:
 ```json
 {
   "success": false,
@@ -197,9 +230,9 @@ If input is invalid or a notification is not found:
 
 ---
 
-## 🔒 Security & Data Privacy
+## Security and Data Isolation
 
-- Passwords are encrypted using **bcrypt** (salt rounds = 10).
-- Passwords are removed from responses by default.
-- Users can only access notifications linked to their own account.
-- Centralized error handler protects internal stack traces from leaking.
+- Passwords are hashed using bcrypt with 10 salt rounds.
+- Passwords are automatically excluded from API responses.
+- All notification operations enforce ownership checks based on the authenticated user ID.
+- Centralized error handler prevents stack trace leakage in API responses.
