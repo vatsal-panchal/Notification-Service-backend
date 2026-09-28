@@ -1,342 +1,205 @@
-# Notification Service Backend
+# 📬 Notification Service Backend
 
-A simple, robust Notification Service backend built with Node.js, Express, TypeScript, and MongoDB.
+A clean, lightweight, and robust Notification Service REST API built with **Node.js**, **Express**, **TypeScript**, and **MongoDB**.
 
-## Features
+---
 
-- **Authentication**: User registration, login, and profile fetching with bcrypt password hashing and JWT authentication.
-- **Notifications**: Create, retrieve, mark as read, and delete notifications.
-- **Authorization**: Strict data isolation ensuring users can only create, view, update, and delete their own notifications.
-- **Validation**: Input validation for all authentication and notification endpoints with clear 400 responses.
-- **Error Handling**: Centralized error-handling middleware returning structured, consistent JSON error responses.
+## ✨ Features
 
-## Tech Stack
+- **🔐 Secure Authentication**: Register, login, and fetch user profile with bcrypt password hashing and JWT.
+- **📩 Notifications CRUD**: Create, read, mark as read, and delete notifications.
+- **🛡️ Strict Authorization**: Users can only create, view, update, and delete their own notifications.
+- **✔️ Input Validation**: Simple and effective request validation with descriptive `400 Bad Request` messages.
+- **⚠️ Centralized Error Handling**: Unified and consistent JSON response structure across the application.
+- **📦 Clean TypeScript Architecture**: Strongly-typed code without over-engineering or unnecessary abstractions.
 
-- Node.js
-- Express.js
-- TypeScript
-- MongoDB & Mongoose
-- JWT (`jsonwebtoken`)
-- bcrypt
-- dotenv
+---
 
-## Folder Structure
+## 🛠️ Tech Stack
+
+- **Runtime**: [Node.js](https://nodejs.org/)
+- **Framework**: [Express.js](https://expressjs.com/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Database**: [MongoDB](https://www.mongodb.com/) via [Mongoose](https://mongoosejs.com/)
+- **Security & Auth**: [JWT (jsonwebtoken)](https://jwt.io/), [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
+- **Environment**: [dotenv](https://github.com/motdotla/dotenv)
+
+---
+
+## 📁 Folder Structure
 
 ```text
-src/
-  config/
-    db.ts
-  controllers/
-    auth.controller.ts
-    notification.controller.ts
-  middleware/
-    auth.middleware.ts
-    error.middleware.ts
-  models/
-    User.ts
-    Notification.ts
-  routes/
-    auth.routes.ts
-    notification.routes.ts
-  utils/
-    jwt.ts
-  app.ts
-  server.ts
+notification-service/
+├── src/
+│   ├── config/
+│   │   └── db.ts                   # MongoDB connection logic
+│   ├── controllers/
+│   │   ├── auth.controller.ts      # Authentication handlers (register, login, me)
+│   │   └── notification.controller.ts # Notification CRUD handlers
+│   ├── middleware/
+│   │   ├── auth.middleware.ts      # JWT verification middleware
+│   │   └── error.middleware.ts     # Global error handling middleware
+│   ├── models/
+│   │   ├── User.ts                 # Mongoose User model
+│   │   └── Notification.ts         # Mongoose Notification model
+│   ├── routes/
+│   │   ├── auth.routes.ts          # Auth route endpoints
+│   │   └── notification.routes.ts  # Notification route endpoints
+│   ├── utils/
+│   │   └── jwt.ts                  # JWT sign & verify utilities
+│   ├── app.ts                      # Express app configuration
+│   └── server.ts                   # Application entry point
+├── .env.example                    # Sample environment variables
+├── .gitignore                      # Git ignored files
+├── package.json                    # Project dependencies and scripts
+├── tsconfig.json                   # TypeScript configuration
+└── README.md                       # Project documentation
 ```
 
-## Local MongoDB Setup
+---
 
-Ensure MongoDB is installed and running locally on your machine at port 27017:
+## 🚀 Getting Started
 
-- Connection string: `mongodb://127.0.0.1:27017/notification_service`
+### 1. Prerequisites
+- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- [MongoDB](https://www.mongodb.com/try/download/community) installed and running locally on default port `27017`
 
-To start MongoDB locally (depending on your OS):
-- On Windows (Service): Start the MongoDB service from Services or run `mongod`.
-- On Linux / macOS: `sudo systemctl start mongod` or `brew services start mongodb/brew/mongodb-community`.
+### 2. Installation
+Clone the repository and install dependencies:
+```bash
+npm install
+```
 
-## Installation
-
-1. Clone or open the repository.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-## .env Setup
-
-Create a `.env` file in the root directory by copying `.env.example`:
-
+### 3. Environment Setup
+Create a `.env` file in the root folder based on `.env.example`:
 ```bash
 cp .env.example .env
 ```
 
-Contents of `.env`:
+Ensure your `.env` contains:
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/notification_service
-JWT_SECRET=your_secret_here
+JWT_SECRET=your_super_secret_jwt_key
 ```
-
-## npm Commands
-
-- Run in development mode (with hot reloading via `ts-node-dev`):
-  ```bash
-  npm run dev
-  ```
-- Build TypeScript to JavaScript:
-  ```bash
-  npm run build
-  ```
-- Start production build:
-  ```bash
-  npm start
-  ```
-
-## API Endpoints
-
-### Authentication Routes
-
-| Method | Endpoint | Description | Auth Required |
-| --- | --- | --- | --- |
-| `POST` | `/api/auth/register` | Register a new user | No |
-| `POST` | `/api/auth/login` | Login user and receive JWT | No |
-| `GET` | `/api/auth/me` | Get current user's profile | Yes (Bearer Token) |
-
-### Notification Routes
-
-| Method | Endpoint | Description | Auth Required |
-| --- | --- | --- | --- |
-| `POST` | `/api/notifications` | Create a new notification | Yes (Bearer Token) |
-| `GET` | `/api/notifications` | Get all notifications for current user | Yes (Bearer Token) |
-| `GET` | `/api/notifications/:id` | Get notification by ID | Yes (Bearer Token) |
-| `PATCH` | `/api/notifications/:id/read` | Mark notification as read | Yes (Bearer Token) |
-| `DELETE` | `/api/notifications/:id` | Delete notification | Yes (Bearer Token) |
 
 ---
 
-## Example Request Bodies & Responses
+## 📜 Available Scripts
 
-### 1. Register User
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Runs the server in development mode with hot reloading |
+| `npm run build` | Compiles TypeScript code to `./dist` |
+| `npm start` | Runs the compiled production code from `./dist` |
+
+---
+
+## 📡 API Reference
+
+Base URL: `http://localhost:5000/api`
+
+### 🔑 Authentication
+
+| Method | Endpoint | Description | Auth |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/auth/register` | Register a new user | ❌ |
+| `POST` | `/auth/login` | Login user & obtain JWT | ❌ |
+| `GET` | `/auth/me` | Fetch logged-in user profile | 🔒 Bearer |
+
+### 🔔 Notifications
+
+| Method | Endpoint | Description | Auth |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/notifications` | Create a new notification (`EMAIL` \| `IN_APP`) | 🔒 Bearer |
+| `GET` | `/notifications` | Get all notifications for current user | 🔒 Bearer |
+| `GET` | `/notifications/:id` | Get single notification by ID | 🔒 Bearer |
+| `PATCH` | `/notifications/:id/read` | Mark a notification as read | 🔒 Bearer |
+| `DELETE` | `/notifications/:id` | Delete a notification | 🔒 Bearer |
+
+---
+
+## 🧪 Request & Response Examples
+
+### Register User
+**Request:**
 `POST /api/auth/register`
-
-Request Body:
 ```json
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "secretpassword"
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "password": "mypassword123"
 }
 ```
 
-Response (`201 Created`):
+**Success Response (`201 Created`):**
 ```json
 {
   "success": true,
   "message": "User registered successfully",
   "data": {
     "user": {
-      "_id": "65f02bc14a9c13b2c1a8e901",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "createdAt": "2026-09-28T14:15:00.000Z",
-      "updatedAt": "2026-09-28T14:15:00.000Z"
+      "_id": "670f5e1f0e21a8a9c3d4e5f6",
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "createdAt": "2026-09-28T14:20:00.000Z",
+      "updatedAt": "2026-09-28T14:20:00.000Z"
     },
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   }
 }
 ```
 
-### 2. Login User
-`POST /api/auth/login`
+---
 
-Request Body:
-```json
-{
-  "email": "john@example.com",
-  "password": "secretpassword"
-}
-```
-
-Response (`200 OK`):
-```json
-{
-  "success": true,
-  "message": "Login successful",
-  "data": {
-    "user": {
-      "_id": "65f02bc14a9c13b2c1a8e901",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "createdAt": "2026-09-28T14:15:00.000Z",
-      "updatedAt": "2026-09-28T14:15:00.000Z"
-    },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
-}
-```
-
-### 3. Get Current User Profile
-`GET /api/auth/me`
-
-Headers:
-```text
-Authorization: Bearer <token>
-```
-
-Response (`200 OK`):
-```json
-{
-  "success": true,
-  "message": "User profile retrieved successfully",
-  "data": {
-    "user": {
-      "_id": "65f02bc14a9c13b2c1a8e901",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "createdAt": "2026-09-28T14:15:00.000Z",
-      "updatedAt": "2026-09-28T14:15:00.000Z"
-    }
-  }
-}
-```
-
-### 4. Create Notification
+### Create Notification
+**Header:** `Authorization: Bearer <token>`  
+**Request:**
 `POST /api/notifications`
-
-Headers:
-```text
-Authorization: Bearer <token>
-```
-
-Request Body:
 ```json
 {
-  "title": "Welcome Email",
-  "message": "Welcome to our notification service!",
-  "type": "EMAIL"
+  "title": "Order Shipped",
+  "message": "Your package is on its way!",
+  "type": "IN_APP"
 }
 ```
-*(type must be `EMAIL` or `IN_APP`)*
 
-Response (`201 Created`):
+**Success Response (`201 Created`):**
 ```json
 {
   "success": true,
   "message": "Notification created successfully",
   "data": {
     "notification": {
-      "_id": "65f02c404a9c13b2c1a8e905",
-      "user": "65f02bc14a9c13b2c1a8e901",
-      "title": "Welcome Email",
-      "message": "Welcome to our notification service!",
-      "type": "EMAIL",
+      "_id": "670f5e420e21a8a9c3d4e5f8",
+      "user": "670f5e1f0e21a8a9c3d4e5f6",
+      "title": "Order Shipped",
+      "message": "Your package is on its way!",
+      "type": "IN_APP",
       "isRead": false,
-      "createdAt": "2026-09-28T14:16:00.000Z",
-      "updatedAt": "2026-09-28T14:16:00.000Z"
+      "createdAt": "2026-09-28T14:22:00.000Z",
+      "updatedAt": "2026-09-28T14:22:00.000Z"
     }
   }
 }
 ```
 
-### 5. Get All Notifications
-`GET /api/notifications`
+---
 
-Headers:
-```text
-Authorization: Bearer <token>
-```
-
-Response (`200 OK`):
+### Standard Error Response Example
+If input is invalid or a notification is not found:
 ```json
 {
-  "success": true,
-  "message": "Notifications retrieved successfully",
-  "data": {
-    "notifications": [
-      {
-        "_id": "65f02c404a9c13b2c1a8e905",
-        "user": "65f02bc14a9c13b2c1a8e901",
-        "title": "Welcome Email",
-        "message": "Welcome to our notification service!",
-        "type": "EMAIL",
-        "isRead": false,
-        "createdAt": "2026-09-28T14:16:00.000Z",
-        "updatedAt": "2026-09-28T14:16:00.000Z"
-      }
-    ]
-  }
+  "success": false,
+  "message": "Notification not found"
 }
 ```
 
-### 6. Get Notification by ID
-`GET /api/notifications/:id`
+---
 
-Headers:
-```text
-Authorization: Bearer <token>
-```
+## 🔒 Security & Data Privacy
 
-Response (`200 OK`):
-```json
-{
-  "success": true,
-  "message": "Notification retrieved successfully",
-  "data": {
-    "notification": {
-      "_id": "65f02c404a9c13b2c1a8e905",
-      "user": "65f02bc14a9c13b2c1a8e901",
-      "title": "Welcome Email",
-      "message": "Welcome to our notification service!",
-      "type": "EMAIL",
-      "isRead": false,
-      "createdAt": "2026-09-28T14:16:00.000Z",
-      "updatedAt": "2026-09-28T14:16:00.000Z"
-    }
-  }
-}
-```
-
-### 7. Mark Notification as Read
-`PATCH /api/notifications/:id/read`
-
-Headers:
-```text
-Authorization: Bearer <token>
-```
-
-Response (`200 OK`):
-```json
-{
-  "success": true,
-  "message": "Notification marked as read",
-  "data": {
-    "notification": {
-      "_id": "65f02c404a9c13b2c1a8e905",
-      "user": "65f02bc14a9c13b2c1a8e901",
-      "title": "Welcome Email",
-      "message": "Welcome to our notification service!",
-      "type": "EMAIL",
-      "isRead": true,
-      "createdAt": "2026-09-28T14:16:00.000Z",
-      "updatedAt": "2026-09-28T14:17:00.000Z"
-    }
-  }
-}
-```
-
-### 8. Delete Notification
-`DELETE /api/notifications/:id`
-
-Headers:
-```text
-Authorization: Bearer <token>
-```
-
-Response (`200 OK`):
-```json
-{
-  "success": true,
-  "message": "Notification deleted successfully",
-  "data": null
-}
-```
+- Passwords are encrypted using **bcrypt** (salt rounds = 10).
+- Passwords are removed from responses by default.
+- Users can only access notifications linked to their own account.
+- Centralized error handler protects internal stack traces from leaking.
